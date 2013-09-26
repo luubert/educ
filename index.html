@@ -132,31 +132,34 @@
 				"dojox/mobile/deviceTheme",
 				"dojo/domReady!"], 
 		function(Map, on, Color, Geocoder, SimpleMarkerSymbol, SimpleFillSymbol, InfoTemplate, infoWindowLite, Graphic, ItemFileReadStore, DataCarousel, FeatureLayer, Parser, Query, QueryTask, ClassBreaksRenderer, Memory) {
-        
 
-		
 		//var infoWindowLite = new esri.dijit.InfoWindowLite(null, dojo.create("div", null, map.root));
         //infoWindowLite.startup();
         var map = new Map("map", {
 			  basemap: "topo",
 			  center: [-122.45,37.75], // long, lat
 			  zoom: 3,
-			  sliderStyle: "small"
-			});
+			  sliderStyle: "small",
+			  sliderOrientation: "horizontal",
+              sliderPosition: "bottom-left"
+		});
 		
 		map.on("load", mapLoaded);
 
-		var featureLayer;
+		var featureLayer, pointFeatures;
 		
 		function mapLoaded() {
 		  //map.setInfoWindow(infoWindowLite);
 		  //var infoTemplate = new InfoTemplate("${destination}");
-		  featureLayer = FeatureLayer("http://services1.arcgis.com/epWj2EmjrgksS4ol/ArcGIS/rest/services/countries/FeatureServer/0", {mode: FeatureLayer.MODE_ONDEMAND,
+		  featureLayer = FeatureLayer("http://services1.arcgis.com/epWj2EmjrgksS4ol/ArcGIS/rest/services/countries/FeatureServer/0", {mode: FeatureLayer.MODE_SNAPSHOT,
             outFields: ["destination"]
           });
-		  featureLayer.on("click", query);
+		  featureLayer.definitionExpression = "FID > 0";
+		  map.on("click", query);
 		  generateRenderer();
-		  //map.addLayer(featureLayer);
+		  pointFeatures = FeatureLayer("http://services1.arcgis.com/epWj2EmjrgksS4ol/arcgis/rest/services/Vacation_Spots/FeatureServer/0");
+		  
+		  map.addLayer(pointFeatures);
 		  getCountryCount();
 		}
 
@@ -201,7 +204,10 @@
 		
 		geocoder.startup();
 		
-	
+		function pointAdded(response)
+		{
+			console.log(response);
+		}
 		
 		function query(evt){
 			var query = new Query();
@@ -209,6 +215,12 @@
 			query.outFields = ["*"];
 			var queryTask = new QueryTask("http://services1.arcgis.com/epWj2EmjrgksS4ol/ArcGIS/rest/services/countries/FeatureServer/0");
 			queryTask.execute(query, showResults);
+			
+			var sms = new SimpleMarkerSymbol().setStyle(SimpleMarkerSymbol.STYLE_CIRCLE).setColor(new Color([255,0,0,0.5]));
+			var attr = {"country":"blah","destination":"blah"};
+			var infoTemplate = new InfoTemplate("blah");
+			var graphic = new Graphic(evt.mapPoint,sms,attr,infoTemplate);
+			pointFeatures.applyEdits([graphic],null,null,function(r){console.log(r)},function(r){console.log(e)});
 		}
 		
 		function getCountries(){
@@ -240,18 +252,18 @@
 		var sortedStore;
 		var carousel;
 		function gotSortedItems(items, request){
-			var dataItems = [];
+			/*var dataItems = [];
 			for (var i in items)
 			{
 				dataItems.push({src:items[i].src[0], count:items[i].count[0]});
-			}
+			}*/
 			sortedStore = new ItemFileReadStore({data: {items: items}});
 			
 			carousel = new DataCarousel({
 				store: sortedStore,
 				height:"150px",
 				navButton:true,
-				numItems:16,
+				itemWidth:150,
 				title:"Countries"
 			}, "carousel");
 			
