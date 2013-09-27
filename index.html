@@ -6,7 +6,7 @@
     <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no"/>
     <title>Simple Map</title>
     <link rel="stylesheet" href="http://js.arcgis.com/3.6/js/esri/css/esri.css">
-	<link rel="stylesheet" type="text/css" href="res-80x60-transparent.css">
+
     <style>
       html, body, #map {
         height: 100%;
@@ -29,12 +29,14 @@
 	  
 	  #carousel {
 		bottom: 0px;
-		height: 100px;
+		height: 150px;
 		width: 100%;
 		position: absolute;
 		z-index: 999999;
 		background: black;
 	  }
+	  
+
 	  
       /* customize geocoder appearance */
       .simpleGeocoder, .simpleGeocoder .esriGeocoderContainer {
@@ -67,10 +69,7 @@
         display: block; 
         background: url("http://dl.dropbox.com/u/2654618/geocoder-reset.gif") no-repeat;
       }
-      /* use a different loading icon */
-      .simpleGeocoder .esriGeocoderLoading .esriGeocoderReset {
-        background: url("http://dl.dropbox.com/u/2654618/geocoder-loading.gif") center center no-repeat;
-      }
+     
       /* make input larger */
       .simpleGeocoder .esriGeocoder input {
         font-size: 2.4em;
@@ -104,6 +103,7 @@
         /* default is #EDEDED, use a light blue instead */
         background-color: #B5DAEA;
       }
+	  */
     </style>
     <script src="http://js.arcgis.com/3.6/"></script>
     <script>
@@ -245,7 +245,7 @@
 		{
 			var query = new Query();
 			query.where = "FID > 0";
-			query.outFields = ["Count_", "FIPS_CNTRY"];
+			query.outFields = ["Count_", "FIPS_CNTRY", "CNTRY_NAME"];
 			var queryTask = new QueryTask("http://services1.arcgis.com/epWj2EmjrgksS4ol/ArcGIS/rest/services/countries/FeatureServer/0");
 			queryTask.execute(query, updateCarousel);
 		}
@@ -262,9 +262,8 @@
 			carousel = new DataCarousel({
 				store: sortedStore,
 				height:"150px",
-				navButton:true,
-				itemWidth:150,
-				title:"Countries"
+				navButton:false,
+				itemWidth:100
 			}, "carousel");
 			
 			carousel.startup();
@@ -280,7 +279,7 @@
 			
 			var items = [];
 			for (var i in data.features){
-				items.push({src: "img/" + data.features[i].attributes.FIPS_CNTRY + ".png", count:data.features[i].attributes.Count_ });
+				items.push({src: "img/" + data.features[i].attributes.FIPS_CNTRY + ".png", count: data.features[i].attributes.Count_, headerText:data.features[i].attributes.CNTRY_NAME + ": " + data.features[i].attributes.Count_ });
 			}
 
 			var jsonData = { 
