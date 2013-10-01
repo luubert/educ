@@ -113,6 +113,7 @@
 
       require(["esri/map", 
 			   "dojo/on",
+			   "esri/geometry/Point",
 			   "dojo/_base/Color",
 			   "esri/dijit/Geocoder",  
 			   "esri/symbols/SimpleMarkerSymbol",
@@ -131,7 +132,7 @@
 				"dojox/mobile",
 				"dojox/mobile/deviceTheme",
 				"dojo/domReady!"], 
-		function(Map, on, Color, Geocoder, SimpleMarkerSymbol, SimpleFillSymbol, InfoTemplate, infoWindowLite, Graphic, ItemFileReadStore, DataCarousel, FeatureLayer, Parser, Query, QueryTask, ClassBreaksRenderer, Memory) {
+		function(Map, on, Point, Color, Geocoder, SimpleMarkerSymbol, SimpleFillSymbol, InfoTemplate, infoWindowLite, Graphic, ItemFileReadStore, DataCarousel, FeatureLayer, Parser, Query, QueryTask, ClassBreaksRenderer, Memory) {
 
 		//var infoWindowLite = new esri.dijit.InfoWindowLite(null, dojo.create("div", null, map.root));
         //infoWindowLite.startup();
