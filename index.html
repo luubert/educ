@@ -29,7 +29,7 @@
 	  
 	  #carousel {
 		bottom: 0px;
-		height: 150px;
+		height: 20%;
 		width: 100%;
 		position: absolute;
 		z-index: 999999;
@@ -91,7 +91,10 @@
 		  map.on("click", query);
 		  generateRenderer();
 		  pointFeatures = FeatureLayer("http://services1.arcgis.com/epWj2EmjrgksS4ol/arcgis/rest/services/Vacation_Spots/FeatureServer/0");
-		  
+		  var logoSymbol = new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":12,"type":"esriPMS","url":"http://static.arcgis.com/images/Symbols/Basic/RedStickpin.png","contentType":"image/png","width":12,"height":12});
+		  var renderer = new esri.renderer.SimpleRenderer(logoSymbol);
+		  pointFeatures.setSelectionSymbol(logoSymbol);
+		  pointFeatures.setRenderer(renderer);
 		  map.addLayer(pointFeatures);
 		  getCountryCount();
 		}
@@ -194,7 +197,7 @@
 			
 			carousel = new DataCarousel({
 				store: sortedStore,
-				height:"150px",
+				height:"20%",
 				navButton:true,
 				itemWidth:160
 			}, "carousel");
